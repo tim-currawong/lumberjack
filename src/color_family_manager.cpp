@@ -1,5 +1,6 @@
 #include "color_family_manager.hpp"
 #include "data_source.hpp"
+#include "data_source_manager.hpp"
 #include "lumberjack_settings.hpp"
 #include <QSettings>
 #include <QJsonDocument>
@@ -303,3 +304,19 @@ void ColorFamilyManager::loadFromSettings()
         regenerateAllShades();
     }
 }
+
+void ColorFamilyManager::reapplyAllColorFamilies()
+{
+    DataSourceManager* dsm = DataSourceManager::getInstance();
+
+    int sourceCount = dsm->getSourceCount();
+    for (int i = 0; i < sourceCount; i++)
+    {
+        DataSourcePointer source = dsm->getSourceByIndex(i);
+        if (source)
+        {
+            source->reapplyColorFamilies();
+        }
+    }
+}
+

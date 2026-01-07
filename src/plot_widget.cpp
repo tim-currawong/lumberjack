@@ -22,6 +22,7 @@
 
 #include "data_source_manager.hpp"
 #include "lumberjack_settings.hpp"
+#include "color_family_manager.hpp"
 
 
 /**
@@ -66,7 +67,12 @@ PlotWidget::PlotWidget() : QwtPlot()
 
     if (QColor::isValidColorName(bgColor))
     {
-        setBackgroundColor(QColor(bgColor));
+        QColor bg = QColor(bgColor);
+        setBackgroundColor(bg);
+
+        // Inform ColorFamilyManager about background color for shade generation
+        ColorFamilyManager* cfm = ColorFamilyManager::getInstance();
+        cfm->setPlotBackgroundColor(bg);
     }
 
     // Initially set an empty axis title
@@ -733,6 +739,10 @@ void PlotWidget::setBackgroundColor(QColor color)
 
     crosshair->setLinePen(pen);
     zoomer->setRubberBandPen(pen);
+
+    // Inform ColorFamilyManager about background color change
+    ColorFamilyManager* cfm = ColorFamilyManager::getInstance();
+    cfm->setPlotBackgroundColor(color);
 
     replot();
 }

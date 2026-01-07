@@ -48,6 +48,9 @@ public:
     // Generate shades for all families based on current background
     void regenerateAllShades();
 
+    // Re-apply color families to all existing data sources
+    void reapplyAllColorFamilies();
+
     // Persistence
     void saveToSettings();
     void loadFromSettings();

@@ -359,3 +359,65 @@ int DataSource::countSeriesInFamily(QString familyId) const
 }
 
 
+
+
+/*
+ * Re-apply color family assignments to all existing series
+ */
+void DataSource::reapplyColorFamilies()
+{
+    ColorFamilyManager* cfm = ColorFamilyManager::getInstance();
+
+    // Clear family associations first
+    QMap<QString, int> familyCounts;  // Track series count per family
+
+    for (auto series : data_series.values())
+    {
+        if (series.isNull())
+            continue;
+
+        // Try to match this series against color families
+        ColorFamily* family = cfm->matchSeries(series->getLabel());
+
+        if (family)
+        {
+            QString familyId = family->getId();
+
+            // Get the count of series already in this family from this source
+            int seriesIndex = familyCounts.value(familyId, 0);
+            familyCounts[familyId] = seriesIndex + 1;
+
+            // Assign new color
+            QColor color = cfm->assignColor(series->getLabel(), this, seriesIndex);
+            series->setColor(color);
+            series->setColorFamily(familyId, seriesIndex);
+        }
+        else
+        {
+            // No family match - use default palette
+            ColorFamilyConfiguration* config = cfm->getActiveConfiguration();
+            if (config)
+            {
+                QString paletteName = config->getDefaultPaletteName();
+                QList<QColor> palette = cfm->getDefaultPaletteColors(paletteName);
+
+                if (!palette.isEmpty())
+                {
+                    // Use some index to pick from palette (could use existing color_wheel_cursor)
+                    int index = color_wheel_cursor % palette.count();
+                    series->setColor(palette.at(index));
+                    color_wheel_cursor++;
+                }
+            }
+
+            // Clear family association
+            series->setColorFamily("", 0);
+        }
+
+        // Trigger visual update
+        series->updateStyle();
+    }
+
+    emit dataChanged();
+}
+

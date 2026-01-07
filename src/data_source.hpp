@@ -62,6 +62,9 @@ public:
     // Count series in this source that belong to a specific color family
     int countSeriesInFamily(QString familyId) const;
 
+    // Re-apply color family assignments to all series
+    void reapplyColorFamilies();
+
 signals:
     void dataChanged(void);
 

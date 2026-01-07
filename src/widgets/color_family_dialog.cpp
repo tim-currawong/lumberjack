@@ -456,6 +456,9 @@ void ColorFamilyDialog::onApply()
 
         ColorFamilyManager* cfm = ColorFamilyManager::getInstance();
         cfm->setActiveConfiguration(currentConfigName);
+
+        // Re-apply colors to all existing series
+        cfm->reapplyAllColorFamilies();
     }
 }
 
