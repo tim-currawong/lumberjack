@@ -23,6 +23,7 @@
 #include "plugins_dialog.hpp"
 #include "about_dialog.hpp"
 #include "math_trace_dialog.hpp"
+#include "color_family_dialog.hpp"
 
 #include "plugin_registry.hpp"
 
@@ -187,6 +188,7 @@ void MainWindow::initMenus()
 {
     // File menu
     connect(ui->action_Import_Data, &QAction::triggered, this, &MainWindow::importData);
+    connect(ui->action_Preferences, &QAction::triggered, this, &MainWindow::showPreferences);
     connect(ui->actionE_xit, &QAction::triggered, this, &QMainWindow::close);
 
     // View menu
@@ -381,6 +383,17 @@ void MainWindow::showPluginsInfo(void)
 void MainWindow::showAboutInfo()
 {
     AboutDialog dlg(this);
+
+    dlg.exec();
+}
+
+
+/*
+ * Display the "Preferences" dialog (Color Families)
+ */
+void MainWindow::showPreferences()
+{
+    ColorFamilyDialog dlg(this);
 
     dlg.exec();
 }

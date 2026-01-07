@@ -20,6 +20,7 @@ public slots:
     void save();
 
     void setColor();
+    void openColorFamilyDialog();
     void updateColorButton();
 
 protected:

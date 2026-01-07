@@ -3,6 +3,7 @@
 #include <qwt_symbol.h>
 
 #include "series_editor_dialog.hpp"
+#include "color_family_dialog.hpp"
 
 
 SeriesEditorDialog::SeriesEditorDialog(DataSeriesPointer s, QWidget *parent) : QDialog(parent), series(s)
@@ -25,6 +26,7 @@ SeriesEditorDialog::SeriesEditorDialog(DataSeriesPointer s, QWidget *parent) : Q
     connect(ui.buttonBox, &QDialogButtonBox::rejected, this, &SeriesEditorDialog::reject);
 
     connect(ui.line_color, &QPushButton::released, this, &SeriesEditorDialog::setColor);
+    connect(ui.manage_color_families_btn, &QPushButton::clicked, this, &SeriesEditorDialog::openColorFamilyDialog);
 
     color = series->getColor();
 
@@ -95,6 +97,14 @@ void SeriesEditorDialog::setColor()
     dlg->deleteLater();
 
     updateColorButton();
+}
+
+
+void SeriesEditorDialog::openColorFamilyDialog()
+{
+    ColorFamilyDialog dlg(this);
+
+    dlg.exec();
 }
 
 

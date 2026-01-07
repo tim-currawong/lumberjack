@@ -226,6 +226,26 @@
         </property>
        </widget>
       </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_color_family">
+        <property name="text">
+         <string>Color Family</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="2">
+       <widget class="QPushButton" name="manage_color_families_btn">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Manage Color Families...</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

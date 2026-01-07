@@ -50,6 +50,7 @@ protected slots:
 
     void showAboutInfo(void);
     void showPluginsInfo(void);
+    void showPreferences(void);
 
     void importData(void);
 
