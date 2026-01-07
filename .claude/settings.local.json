@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(git add:*)",
-      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd color family system for intelligent trace color assignment\n\n- Implement ColorFamily class with pattern matching and shade generation\n- Implement ColorFamilyConfiguration for managing named configurations\n- Implement ColorFamilyManager singleton for global color management\n- Add color family association to DataSeries\n- Update DataSource to use color family matching on import\n- Create Color Family Configuration dialog UI\n- Support background-aware contrast checking \\(WCAG AA compliance\\)\n- Include Tableau 10 and ColorBrewer Set1 default palettes\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd color family system for intelligent trace color assignment\n\n- Implement ColorFamily class with pattern matching and shade generation\n- Implement ColorFamilyConfiguration for managing named configurations\n- Implement ColorFamilyManager singleton for global color management\n- Add color family association to DataSeries\n- Update DataSource to use color family matching on import\n- Create Color Family Configuration dialog UI\n- Support background-aware contrast checking \\(WCAG AA compliance\\)\n- Include Tableau 10 and ColorBrewer Set1 default palettes\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git commit:*)"
     ]
   }
 }

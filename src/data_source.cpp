@@ -394,21 +394,8 @@ void DataSource::reapplyColorFamilies()
         }
         else
         {
-            // No family match - use default palette
-            ColorFamilyConfiguration* config = cfm->getActiveConfiguration();
-            if (config)
-            {
-                QString paletteName = config->getDefaultPaletteName();
-                QList<QColor> palette = cfm->getDefaultPaletteColors(paletteName);
-
-                if (!palette.isEmpty())
-                {
-                    // Use some index to pick from palette (could use existing color_wheel_cursor)
-                    int index = color_wheel_cursor % palette.count();
-                    series->setColor(palette.at(index));
-                    color_wheel_cursor++;
-                }
-            }
+            // No family match - preserve existing color
+            // The user may have gotten used to this color, so don't change it
 
             // Clear family association
             series->setColorFamily("", 0);

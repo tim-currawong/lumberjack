@@ -89,22 +89,23 @@ void ColorFamily::generateShades(QColor backgroundColor)
 
     if (lightBg)
     {
-        // For light backgrounds: generate dark to medium shades
-        QColor dark = QColor::fromHsl(h, qRound(s * 0.9), qRound(l * 0.4));
-        QColor medium = QColor::fromHsl(h, qRound(s * 0.85), qRound(l * 0.6));
-        QColor light = QColor::fromHsl(h, qRound(s * 0.75), qRound(l * 0.75));
-        QColor veryLight = QColor::fromHsl(h, qRound(s * 0.65), qRound(l * 0.85));
+        // For light backgrounds: generate medium to darker shades
+        // Start lighter (55% instead of 40%) for better distinguishability
+        QColor mediumLight = QColor::fromHsl(h, 200, 140);  // Medium-light, saturated
+        QColor medium = QColor::fromHsl(h, 210, 110);       // Medium, more saturated
+        QColor mediumDark = QColor::fromHsl(h, 220, 80);    // Medium-dark, highly saturated
+        QColor dark = QColor::fromHsl(h, 230, 60);          // Dark, very saturated
 
         // Ensure minimum contrast
-        ensureMinimumContrast(dark, backgroundColor);
+        ensureMinimumContrast(mediumLight, backgroundColor);
         ensureMinimumContrast(medium, backgroundColor);
-        ensureMinimumContrast(light, backgroundColor);
-        ensureMinimumContrast(veryLight, backgroundColor);
+        ensureMinimumContrast(mediumDark, backgroundColor);
+        ensureMinimumContrast(dark, backgroundColor);
 
-        shades.append(dark);
+        shades.append(mediumLight);
         shades.append(medium);
-        shades.append(light);
-        shades.append(veryLight);
+        shades.append(mediumDark);
+        shades.append(dark);
     }
     else
     {
