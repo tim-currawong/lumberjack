@@ -4,6 +4,7 @@
 #include <QDir>
 
 #include "data_source.hpp"
+#include "color_family_manager.hpp"
 
 
 DataSource::DataSource(QString source, QString label, QString description) :
@@ -163,7 +164,47 @@ bool DataSource::addSeries(DataSeriesPointer series, bool auto_color)
 
     if (auto_color)
     {
-        series->setColor(getNextColor());
+        // Try to assign color using color family system
+        ColorFamilyManager* cfm = ColorFamilyManager::getInstance();
+        ColorFamily* family = cfm->matchSeries(series->getLabel());
+
+        if (family)
+        {
+            // Count how many series from this source are already in this family
+            int seriesIndexInFamily = countSeriesInFamily(family->getId());
+
+            // Get color from family
+            QColor color = cfm->assignColor(series->getLabel(), this, seriesIndexInFamily);
+            series->setColor(color);
+            series->setColorFamily(family->getId(), seriesIndexInFamily);
+        }
+        else
+        {
+            // No family match - use traditional color wheel or default palette
+            ColorFamilyConfiguration* config = cfm->getActiveConfiguration();
+            if (config)
+            {
+                // Use default palette from configuration
+                QString paletteName = config->getDefaultPaletteName();
+                QList<QColor> palette = cfm->getDefaultPaletteColors(paletteName);
+
+                if (!palette.isEmpty())
+                {
+                    int index = color_wheel_cursor % palette.count();
+                    series->setColor(palette.at(index));
+                    color_wheel_cursor++;
+                }
+                else
+                {
+                    series->setColor(getNextColor());
+                }
+            }
+            else
+            {
+                // No configuration active - fall back to original color wheel
+                series->setColor(getNextColor());
+            }
+        }
     }
 
     emit dataChanged();
@@ -297,6 +338,24 @@ QStringList DataSource::getGroupLabels() const
     }
 
     return labels;
+}
+
+/*
+ * Count how many series from this source belong to a specific color family
+ */
+int DataSource::countSeriesInFamily(QString familyId) const
+{
+    int count = 0;
+
+    for (auto series : data_series.values())
+    {
+        if (!series.isNull() && series->getColorFamilyId() == familyId)
+        {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 

@@ -42,6 +42,9 @@ SOURCES += \
     src/helpers.cpp \
     src/data_series.cpp \
     src/data_source.cpp \
+    src/color_family.cpp \
+    src/color_family_configuration.cpp \
+    src/color_family_manager.cpp \
     src/lumberjack_debug.cpp \
     src/lumberjack_settings.cpp \
     src/lumberjack_version.cpp \
@@ -69,7 +72,8 @@ SOURCES += \
     src/widgets/plugins_dialog.cpp \
     src/widgets/series_editor_dialog.cpp \
     src/widgets/stats_widget.cpp \
-    src/widgets/timeline_widget.cpp
+    src/widgets/timeline_widget.cpp \
+    src/widgets/color_family_dialog.cpp
 
 HEADERS += \
     src/data_source_manager.hpp \
@@ -79,6 +83,9 @@ HEADERS += \
     src/helpers.hpp \
     src/data_series.hpp \
     src/data_source.hpp \
+    src/color_family.hpp \
+    src/color_family_configuration.hpp \
+    src/color_family_manager.hpp \
     src/lumberjack_debug.hpp \
     src/lumberjack_settings.hpp \
     src/lumberjack_version.hpp \
@@ -108,6 +115,7 @@ HEADERS += \
     src/widgets/series_editor_dialog.hpp \
     src/widgets/stats_widget.hpp \
     src/widgets/timeline_widget.hpp \
+    src/widgets/color_family_dialog.hpp \
 
 # simple-fft includes
 HEADERS += \

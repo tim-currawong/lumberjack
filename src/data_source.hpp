@@ -8,6 +8,9 @@
 
 #include "data_series.hpp"
 
+// Forward declaration
+class ColorFamily;
+
 
 /**
  * @brief The DataSource class defines a "source" of data
@@ -55,6 +58,9 @@ public:
     bool removeSeriesByLabel(QString label, bool update = true);
 
     void removeAllSeries(bool update = true);
+
+    // Count series in this source that belong to a specific color family
+    int countSeriesInFamily(QString familyId) const;
 
 signals:
     void dataChanged(void);
