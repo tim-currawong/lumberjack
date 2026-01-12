@@ -22,6 +22,7 @@
 
 #include "plugins_dialog.hpp"
 #include "about_dialog.hpp"
+#include "math_trace_dialog.hpp"
 
 #include "plugin_registry.hpp"
 
@@ -196,6 +197,7 @@ void MainWindow::initMenus()
 
     // Graphs menu
     connect(ui->action_Add_Graph, &QAction::triggered, this, &MainWindow::addPlot);
+    connect(ui->action_Math_Trace, &QAction::triggered, this, &MainWindow::showMathTraceDialog);
 
     // Help menu
     connect(ui->action_About, &QAction::triggered, this, &MainWindow::showAboutInfo);
@@ -623,4 +625,10 @@ void MainWindow::toggleStatisticsView(void)
 
         ui->action_Statistics->setChecked(true);
     }
+}
+
+void MainWindow::showMathTraceDialog()
+{
+    MathTraceDialog dialog(this);
+    dialog.exec();
 }
