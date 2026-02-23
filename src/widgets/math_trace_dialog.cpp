@@ -404,6 +404,7 @@ void MathTraceDialog::createMathTrace()
 
     // Add to MathDataSource
     mathSource->addMathSeries(mathSeries);
+    currentSeries = mathSeries;
 
     // Set up computation thread
     computeThread = new QThread(this);
@@ -459,6 +460,13 @@ void MathTraceDialog::onComputationFailed(QString error)
 {
     ui->progressBar->setVisible(false);
     setStatus(QString("Computation failed: %1").arg(error), true);
+
+    // Remove the series that was added before computation started
+    if (currentSeries)
+    {
+        MathDataSource::getInstance()->removeMathSeries(currentSeries->getLabel());
+        currentSeries.reset();
+    }
 
     // Re-enable OK button
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);

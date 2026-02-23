@@ -96,6 +96,9 @@ private:
     // Edit mode
     bool isEditMode;
     MathDataSeriesPointer editingSeries;
+
+    // Series currently being computed (so it can be removed on failure)
+    MathDataSeriesPointer currentSeries;
 };
 
 #endif // MATH_TRACE_DIALOG_HPP

@@ -181,6 +181,12 @@ void MathTraceComputer::startComputation()
     // Trigger data update on the output series
     currentOutputSeries->update();
 
+    if (validPoints == 0)
+    {
+        emit computationFailed(QString("Expression produced no valid results (%1 points skipped) - check for division by zero or invalid operations").arg(skippedPoints));
+        return;
+    }
+
     qDebug() << "Math trace computation complete:";
     qDebug() << "  - Time elapsed:" << timer.elapsed() << "ms";
     qDebug() << "  - Valid points:" << validPoints;
