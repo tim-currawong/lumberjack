@@ -169,6 +169,8 @@ double PlotWidget::getNewestTimestamp(bool *ok) const
 
         if (series.isNull()) continue;
 
+        if (!series->hasData()) continue;
+
         t = series->getNewestTimestamp();
 
         if (t > newest)
@@ -215,6 +217,8 @@ double PlotWidget::getMinimumValue(bool *ok) const
 
         if (series.isNull()) continue;
 
+        if (!series->hasData()) continue;
+
         value = series->getMinimumValue();
 
         if (value < minimum)
@@ -260,6 +264,8 @@ double PlotWidget::getMaximumValue(bool *ok) const
         auto series = curve->getDataSeries();
 
         if (series.isNull()) continue;
+
+        if (!series->hasData()) continue;
 
         value = series->getMaximumValue();
 

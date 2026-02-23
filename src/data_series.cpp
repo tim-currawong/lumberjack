@@ -392,6 +392,7 @@ double DataSeries::getNewestValue() const
 
 double DataSeries::getMinimumValue() const
 {
+    if (size() == 0) return 0.0;
     return getMinimumValue(getOldestTimestamp(), getNewestTimestamp());
 }
 
@@ -425,6 +426,7 @@ double DataSeries::getMinimumValue(double t_min, double t_max) const
 
 double DataSeries::getMaximumValue() const
 {
+    if (size() == 0) return 0.0;
     return getMaximumValue(getOldestTimestamp(), getNewestTimestamp());
 }
 
@@ -502,6 +504,7 @@ double DataSeries::getValueAtTime(double timestamp, InterpolationMode mode) cons
 
 double DataSeries::getMeanValue(void) const
 {
+    if (size() == 0) return 0.0;
     return getMeanValue(getOldestTimestamp(), getNewestTimestamp());
 }
 
@@ -539,6 +542,7 @@ double DataSeries::getMeanValue(double t_min, double t_max) const
 
 uint64_t DataSeries::getIndexForTimestamp(double t, SearchDirection direction) const
 {
+    if (size() == 0) return 0;
 
     if (t < getOldestTimestamp())
     {

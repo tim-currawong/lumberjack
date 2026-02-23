@@ -61,6 +61,7 @@
     </property>
     <addaction name="action_Add_Graph"/>
     <addaction name="separator"/>
+    <addaction name="action_Math_Trace"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_View"/>
@@ -121,6 +122,11 @@
   <action name="action_Plugins">
    <property name="text">
     <string>&amp;Plugins</string>
+   </property>
+  </action>
+  <action name="action_Math_Trace">
+   <property name="text">
+    <string>&amp;Math Trace</string>
    </property>
   </action>
  </widget>

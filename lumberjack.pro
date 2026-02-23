@@ -45,6 +45,10 @@ SOURCES += \
     src/lumberjack_debug.cpp \
     src/lumberjack_settings.cpp \
     src/lumberjack_version.cpp \
+    src/math_data_series.cpp \
+    src/math_data_source.cpp \
+    src/math_expression_parser.cpp \
+    src/math_trace_computer.cpp \
     src/plot_curve.cpp \
     src/plot_legend.cpp \
     src/plot_marker.cpp \
@@ -60,6 +64,7 @@ SOURCES += \
     src/widgets/dataview_tree.cpp \
     src/widgets/dataview_widget.cpp \
     src/widgets/debug_widget.cpp \
+    src/widgets/math_trace_dialog.cpp \
     src/widgets/plot_sampler.cpp \
     src/widgets/plugins_dialog.cpp \
     src/widgets/series_editor_dialog.cpp \
@@ -77,6 +82,10 @@ HEADERS += \
     src/lumberjack_debug.hpp \
     src/lumberjack_settings.hpp \
     src/lumberjack_version.hpp \
+    src/math_data_series.hpp \
+    src/math_data_source.hpp \
+    src/math_expression_parser.hpp \
+    src/math_trace_computer.hpp \
     src/plot_curve.hpp \
     src/plot_legend.hpp \
     src/plot_marker.hpp \
@@ -93,6 +102,7 @@ HEADERS += \
     src/widgets/dataview_tree.hpp \
     src/widgets/dataview_widget.hpp \
     src/widgets/debug_widget.hpp \
+    src/widgets/math_trace_dialog.hpp \
     src/widgets/plot_sampler.hpp \
     src/widgets/plugins_dialog.hpp \
     src/widgets/series_editor_dialog.hpp \
@@ -116,6 +126,7 @@ FORMS += \
     ui/dataview_widget.ui \
     ui/debug_widget.ui \
     ui/mainwindow.ui \
+    ui/math_trace_dialog.ui \
     ui/plugins_dialog.ui \
     ui/stats_view.ui
 

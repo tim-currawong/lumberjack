@@ -62,6 +62,8 @@ protected slots:
     void addPlot();
     void removePlot(QSharedPointer<PlotWidget> plot);
 
+    void showMathTraceDialog(void);
+
     void hideDockedWidget(QWidget *widget);
 
     void seriesRemoved(DataSeriesPointer series);
