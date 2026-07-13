@@ -1,5 +1,4 @@
 #include "color_family.hpp"
-#include "data_source.hpp"
 #include <QtMath>
 #include <QJsonDocument>
 
@@ -24,7 +23,6 @@ ColorFamily::ColorFamily(const ColorFamily& other)
     , baseHue(other.baseHue)
     , patterns(other.patterns)
     , shades(other.shades)
-    , sourceShadeMap(other.sourceShadeMap)
 {
 }
 
@@ -37,7 +35,6 @@ ColorFamily& ColorFamily::operator=(const ColorFamily& other)
         baseHue = other.baseHue;
         patterns = other.patterns;
         shades = other.shades;
-        sourceShadeMap = other.sourceShadeMap;
     }
     return *this;
 }
@@ -128,7 +125,7 @@ void ColorFamily::generateShades(QColor backgroundColor)
     }
 }
 
-QColor ColorFamily::getShadeForSeries(DataSource* source, int seriesIndexInFamily)
+QColor ColorFamily::getShadeForSeries(int seriesIndexInFamily)
 {
     // If no shades generated, return base color
     if (shades.isEmpty())
@@ -136,15 +133,10 @@ QColor ColorFamily::getShadeForSeries(DataSource* source, int seriesIndexInFamil
         return baseHue;
     }
 
-    // Each series from the same source in the same family gets a different shade
-    // seriesIndex = 0, 1, 2, ... for first, second, third series from this source
+    // Each series in the family gets a different shade
+    // seriesIndexInFamily = 0, 1, 2, ... for first, second, third series in the family
     int shadeIndex = seriesIndexInFamily % shades.count();
     return shades.at(shadeIndex);
-}
-
-void ColorFamily::resetShadeAssignments()
-{
-    sourceShadeMap.clear();
 }
 
 double ColorFamily::contrastRatio(QColor c1, QColor c2) const

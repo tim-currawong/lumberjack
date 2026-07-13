@@ -15,9 +15,15 @@ ColorFamilyConfiguration::ColorFamilyConfiguration(QString name)
 
 ColorFamilyConfiguration::ColorFamilyConfiguration(const ColorFamilyConfiguration& other)
     : name(other.name)
-    , families(other.families)
     , defaultPaletteName(other.defaultPaletteName)
 {
+    // Deep-copy each family so this instance owns independent ColorFamily
+    // objects, rather than aliasing `other`'s (which would let edits to a
+    // working copy leak into the original before being explicitly saved).
+    for (const auto& family : other.families)
+    {
+        families.append(QSharedPointer<ColorFamily>::create(*family));
+    }
 }
 
 ColorFamilyConfiguration& ColorFamilyConfiguration::operator=(const ColorFamilyConfiguration& other)
@@ -25,15 +31,39 @@ ColorFamilyConfiguration& ColorFamilyConfiguration::operator=(const ColorFamilyC
     if (this != &other)
     {
         name = other.name;
-        families = other.families;
         defaultPaletteName = other.defaultPaletteName;
+
+        families.clear();
+        for (const auto& family : other.families)
+        {
+            families.append(QSharedPointer<ColorFamily>::create(*family));
+        }
     }
     return *this;
 }
 
+QList<ColorFamily> ColorFamilyConfiguration::getFamilies() const
+{
+    QList<ColorFamily> result;
+    for (const auto& family : families)
+    {
+        result.append(*family);
+    }
+    return result;
+}
+
+void ColorFamilyConfiguration::replaceFamilies(const QList<ColorFamily>& newFamilies)
+{
+    families.clear();
+    for (const ColorFamily& family : newFamilies)
+    {
+        families.append(QSharedPointer<ColorFamily>::create(family));
+    }
+}
+
 void ColorFamilyConfiguration::addFamily(const ColorFamily& family)
 {
-    families.append(family);
+    families.append(QSharedPointer<ColorFamily>::create(family));
 }
 
 void ColorFamilyConfiguration::removeFamily(int index)
@@ -58,7 +88,7 @@ ColorFamily* ColorFamilyConfiguration::getFamilyAt(int index)
 {
     if (index >= 0 && index < families.count())
     {
-        return &families[index];
+        return families[index].data();
     }
     return nullptr;
 }
@@ -67,9 +97,9 @@ ColorFamily* ColorFamilyConfiguration::getFamilyById(QString id)
 {
     for (int i = 0; i < families.count(); i++)
     {
-        if (families[i].getId() == id)
+        if (families[i]->getId() == id)
         {
-            return &families[i];
+            return families[i].data();
         }
     }
     return nullptr;
@@ -80,9 +110,9 @@ ColorFamily* ColorFamilyConfiguration::matchSeries(QString label)
     // Iterate families in order, return first match
     for (int i = 0; i < families.count(); i++)
     {
-        if (families[i].matchesPattern(label))
+        if (families[i]->matchesPattern(label))
         {
-            return &families[i];
+            return families[i].data();
         }
     }
 
@@ -97,9 +127,9 @@ QJsonObject ColorFamilyConfiguration::toJson() const
     obj["defaultPalette"] = defaultPaletteName;
 
     QJsonArray familiesArray;
-    foreach (const ColorFamily& family, families)
+    for (const auto& family : families)
     {
-        familiesArray.append(family.toJson());
+        familiesArray.append(family->toJson());
     }
     obj["families"] = familiesArray;
 
@@ -117,7 +147,7 @@ ColorFamilyConfiguration ColorFamilyConfiguration::fromJson(const QJsonObject& o
     for (int i = 0; i < familiesArray.size(); i++)
     {
         ColorFamily family = ColorFamily::fromJson(familiesArray[i].toObject());
-        config.families.append(family);
+        config.families.append(QSharedPointer<ColorFamily>::create(family));
     }
 
     return config;

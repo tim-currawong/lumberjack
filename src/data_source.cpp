@@ -174,7 +174,7 @@ bool DataSource::addSeries(DataSeriesPointer series, bool auto_color)
             int seriesIndexInFamily = countSeriesInFamily(family->getId());
 
             // Get color from family
-            QColor color = cfm->assignColor(series->getLabel(), this, seriesIndexInFamily);
+            QColor color = cfm->assignColor(family, seriesIndexInFamily);
             series->setColor(color);
             seriesColorFamilyId[series->getLabel()] = family->getId();
         }
@@ -391,7 +391,7 @@ void DataSource::reapplyColorFamilies()
             familyCounts[familyId] = seriesIndex + 1;
 
             // Assign new color
-            QColor color = cfm->assignColor(series->getLabel(), this, seriesIndex);
+            QColor color = cfm->assignColor(family, seriesIndex);
             series->setColor(color);
             seriesColorFamilyId[series->getLabel()] = familyId;
         }

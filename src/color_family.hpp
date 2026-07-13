@@ -6,14 +6,10 @@
 #include <QString>
 #include <QStringList>
 #include <QList>
-#include <QMap>
 #include <QUuid>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QRegularExpression>
-
-// Forward declaration
-class DataSource;
 
 /**
  * @brief The ColorFamily class represents a group of related colors
@@ -44,8 +40,7 @@ public:
 
     // Shade management
     void generateShades(QColor backgroundColor);
-    QColor getShadeForSeries(DataSource* source, int seriesIndexInFamily);
-    void resetShadeAssignments();
+    QColor getShadeForSeries(int seriesIndexInFamily);
 
     // Serialization
     QJsonObject toJson() const;
@@ -57,8 +52,6 @@ private:
     QColor baseHue;                          // Base color for this family
     QStringList patterns;                    // Wildcard patterns for matching
     QList<QColor> shades;                    // Generated color shades
-
-    QMap<DataSource*, int> sourceShadeMap;   // Track which source gets which shade
 
     // Helper methods
     double contrastRatio(QColor c1, QColor c2) const;

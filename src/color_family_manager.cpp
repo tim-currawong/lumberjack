@@ -40,21 +40,12 @@ ColorFamilyConfiguration* ColorFamilyManager::getActiveConfiguration()
         return nullptr;
     }
 
-    if (configurations.contains(activeConfigurationName))
-    {
-        return &configurations[activeConfigurationName];
-    }
-
-    return nullptr;
+    return configurations.value(activeConfigurationName).data();
 }
 
 ColorFamilyConfiguration* ColorFamilyManager::getConfiguration(QString name)
 {
-    if (configurations.contains(name))
-    {
-        return &configurations[name];
-    }
-    return nullptr;
+    return configurations.value(name).data();
 }
 
 void ColorFamilyManager::setActiveConfiguration(QString name)
@@ -80,7 +71,7 @@ void ColorFamilyManager::saveConfiguration(QString name, const ColorFamilyConfig
 {
     bool isNew = !configurations.contains(name);
 
-    configurations[name] = config;
+    configurations[name] = QSharedPointer<ColorFamilyConfiguration>::create(config);
 
     if (isNew)
     {
@@ -113,10 +104,9 @@ void ColorFamilyManager::renameConfiguration(QString oldName, QString newName)
 {
     if (configurations.contains(oldName) && !configurations.contains(newName))
     {
-        ColorFamilyConfiguration config = configurations[oldName];
-        config.setName(newName);
+        QSharedPointer<ColorFamilyConfiguration> config = configurations.take(oldName);
+        config->setName(newName);
 
-        configurations.remove(oldName);
         configurations[newName] = config;
 
         if (activeConfigurationName == oldName)
@@ -146,35 +136,20 @@ ColorFamily* ColorFamilyManager::matchSeries(QString label)
     return nullptr;
 }
 
-QColor ColorFamilyManager::assignColor(QString label, DataSource* source, int seriesIndexInFamily)
+QColor ColorFamilyManager::assignColor(ColorFamily* family, int seriesIndexInFamily)
 {
-    ColorFamily* family = matchSeries(label);
-
-    if (family)
+    if (!family)
     {
-        // Ensure shades are generated
-        if (family->getShades().isEmpty())
-        {
-            family->generateShades(plotBackgroundColor);
-        }
-
-        return family->getShadeForSeries(source, seriesIndexInFamily);
+        return QColor(0, 0, 0);
     }
 
-    // No match - return color from default palette
-    ColorFamilyConfiguration* config = getActiveConfiguration();
-    QString paletteName = config ? config->getDefaultPaletteName() : "Tableau 10";
-
-    QList<QColor> palette = getDefaultPaletteColors(paletteName);
-
-    if (palette.isEmpty())
+    // Ensure shades are generated
+    if (family->getShades().isEmpty())
     {
-        return QColor(0, 0, 0);  // Fallback to black
+        family->generateShades(plotBackgroundColor);
     }
 
-    // Use series index to select from palette
-    int paletteIndex = seriesIndexInFamily % palette.count();
-    return palette.at(paletteIndex);
+    return family->getShadeForSeries(seriesIndexInFamily);
 }
 
 QList<QColor> ColorFamilyManager::getDefaultPaletteColors(QString paletteName)
@@ -269,8 +244,7 @@ void ColorFamilyManager::saveToSettings()
     QJsonArray configurationsArray;
     foreach (QString name, configurations.keys())
     {
-        ColorFamilyConfiguration config = configurations[name];
-        configurationsArray.append(config.toJson());
+        configurationsArray.append(configurations[name]->toJson());
     }
 
     QJsonDocument doc(configurationsArray);
@@ -294,7 +268,7 @@ void ColorFamilyManager::loadFromSettings()
         for (int i = 0; i < configurationsArray.size(); i++)
         {
             ColorFamilyConfiguration config = ColorFamilyConfiguration::fromJson(configurationsArray[i].toObject());
-            configurations[config.getName()] = config;
+            configurations[config.getName()] = QSharedPointer<ColorFamilyConfiguration>::create(config);
         }
     }
 

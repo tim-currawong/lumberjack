@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QSharedPointer>
 #include <QJsonObject>
 #include "color_family.hpp"
 
@@ -20,7 +21,7 @@ public:
 
     // Getters
     QString getName() const { return name; }
-    QList<ColorFamily> getFamilies() const { return families; }
+    QList<ColorFamily> getFamilies() const;
     QString getDefaultPaletteName() const { return defaultPaletteName; }
 
     // Setters
@@ -30,7 +31,7 @@ public:
     // Family management
     void addFamily(const ColorFamily& family);
     void removeFamily(int index);
-    void replaceFamilies(const QList<ColorFamily>& newFamilies) { families = newFamilies; }
+    void replaceFamilies(const QList<ColorFamily>& newFamilies);
     void reorderFamily(int fromIndex, int toIndex);
     ColorFamily* getFamilyAt(int index);
     ColorFamily* getFamilyById(QString id);
@@ -45,7 +46,13 @@ public:
 
 private:
     QString name;                    // Configuration name (e.g., "Electrical Analysis")
-    QList<ColorFamily> families;     // List of color families
+
+    // Each family is heap-allocated so that ColorFamily* pointers returned by
+    // getFamilyAt()/getFamilyById()/matchSeries() stay valid even if this
+    // QList reallocates/detaches. Copying a ColorFamilyConfiguration deep-copies
+    // the families (see copy constructor) so instances don't alias each other.
+    QList<QSharedPointer<ColorFamily>> families;
+
     QString defaultPaletteName;      // Name of fallback palette for unmatched series
 };
 

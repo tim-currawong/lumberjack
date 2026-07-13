@@ -3,13 +3,11 @@
 
 #include <QObject>
 #include <QMap>
+#include <QSharedPointer>
 #include <QString>
 #include <QStringList>
 #include <QColor>
 #include "color_family_configuration.hpp"
-
-// Forward declaration
-class DataSource;
 
 /**
  * @brief The ColorFamilyManager class manages multiple color family configurations
@@ -36,7 +34,7 @@ public:
 
     // Color assignment (delegates to active configuration)
     ColorFamily* matchSeries(QString label);
-    QColor assignColor(QString label, DataSource* source, int seriesIndexInFamily);
+    QColor assignColor(ColorFamily* family, int seriesIndexInFamily);
 
     // Default palette colors (for series that don't match any family)
     QList<QColor> getDefaultPaletteColors(QString paletteName = "");
@@ -68,7 +66,10 @@ private:
     static ColorFamilyManager* instance;
 
     // Data
-    QMap<QString, ColorFamilyConfiguration> configurations;
+    // Each configuration is heap-allocated so that ColorFamilyConfiguration*
+    // pointers returned by getActiveConfiguration()/getConfiguration() stay
+    // valid even if the QMap itself reallocates/detaches.
+    QMap<QString, QSharedPointer<ColorFamilyConfiguration>> configurations;
     QString activeConfigurationName;
     QColor plotBackgroundColor;
 
