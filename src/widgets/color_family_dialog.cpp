@@ -494,12 +494,14 @@ void ColorFamilyDialog::refreshFamiliesList()
         tempFamily.generateShades(cfm->getPlotBackgroundColor());
         QList<QColor> shades = tempFamily.getShades();
 
-        // Draw shades side by side
+        // Draw shades side by side, covering the full pixmap width exactly
         QPainter painter(&pixmap);
-        int width = pixmap.width() / qMax(1, shades.count());
+        int totalWidth = pixmap.width();
         for (int j = 0; j < shades.count(); j++)
         {
-            painter.fillRect(j * width, 0, width, pixmap.height(), shades.at(j));
+            int xStart = totalWidth * j / shades.count();
+            int xEnd = totalWidth * (j + 1) / shades.count();
+            painter.fillRect(xStart, 0, xEnd - xStart, pixmap.height(), shades.at(j));
         }
 
         QListWidgetItem* item = new QListWidgetItem(family.getName());
@@ -579,10 +581,11 @@ void ColorFamilyDialog::refreshColorPreview()
             }
             else
             {
-                int shadeWidth = width / shades.count();
                 for (int i = 0; i < shades.count(); i++)
                 {
-                    painter.fillRect(i * shadeWidth, 0, shadeWidth, height, shades.at(i));
+                    int xStart = width * i / shades.count();
+                    int xEnd = width * (i + 1) / shades.count();
+                    painter.fillRect(xStart, 0, xEnd - xStart, height, shades.at(i));
                 }
             }
 
