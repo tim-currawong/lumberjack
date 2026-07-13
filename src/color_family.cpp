@@ -86,12 +86,39 @@ void ColorFamily::generateShades(QColor backgroundColor)
 
     if (lightBg)
     {
-        // For light backgrounds: generate medium to darker shades
-        // Start lighter (55% instead of 40%) for better distinguishability
-        QColor mediumLight = QColor::fromHsl(h, 200, 140);  // Medium-light, saturated
-        QColor medium = QColor::fromHsl(h, 210, 110);       // Medium, more saturated
-        QColor mediumDark = QColor::fromHsl(h, 220, 80);    // Medium-dark, highly saturated
-        QColor dark = QColor::fromHsl(h, 230, 60);          // Dark, very saturated
+        // For light backgrounds: generate medium to darker shades, anchored on
+        // the base color's own lightness (offsets chosen to reproduce the prior
+        // fixed ladder of 140/110/80/60 at l = 128, the lightness of a typical
+        // fully-saturated hue) so that very dark or very light base picks (e.g.
+        // black) are actually respected instead of being pulled into a fixed
+        // mid-range band.
+        //
+        // The ladder is shifted as a whole to stay in [0, 255], rather than
+        // clamping each stop independently -- clamping each stop collapses
+        // several of them onto the same boundary value (e.g. a black base
+        // would clamp 3 of the 4 stops to 0), while shifting preserves the
+        // spacing between stops so all four stay distinguishable.
+        int mediumLightL = l + 12;
+        int darkL = l - 68;
+
+        if (darkL < 0)
+        {
+            mediumLightL += -darkL;
+            darkL = 0;
+        }
+        else if (mediumLightL > 255)
+        {
+            darkL -= (mediumLightL - 255);
+            mediumLightL = 255;
+        }
+
+        int mediumL = mediumLightL - 30;
+        int mediumDarkL = mediumLightL - 60;
+
+        QColor mediumLight = QColor::fromHsl(h, 200, mediumLightL);  // Medium-light, saturated
+        QColor medium = QColor::fromHsl(h, 210, mediumL);            // Medium, more saturated
+        QColor mediumDark = QColor::fromHsl(h, 220, mediumDarkL);    // Medium-dark, highly saturated
+        QColor dark = QColor::fromHsl(h, 230, darkL);                // Dark, very saturated
 
         // Ensure minimum contrast
         ensureMinimumContrast(mediumLight, backgroundColor);
