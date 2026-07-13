@@ -89,6 +89,13 @@ protected:
 
     // Keep a map of label:series for efficient lookup
     QMap<QString, DataSeriesPointer> data_series;
+
+    // Color family association per series, keyed by series label.
+    // Kept here (rather than on DataSeries) because DataSeries is
+    // constructed directly by importer plugins - adding fields to it
+    // changes its ABI and breaks any plugin not rebuilt against the
+    // new layout. See DataSource::countSeriesInFamily/reapplyColorFamilies.
+    QMap<QString, QString> seriesColorFamilyId;
 };
 
 

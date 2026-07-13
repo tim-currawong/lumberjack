@@ -176,7 +176,7 @@ bool DataSource::addSeries(DataSeriesPointer series, bool auto_color)
             // Get color from family
             QColor color = cfm->assignColor(series->getLabel(), this, seriesIndexInFamily);
             series->setColor(color);
-            series->setColorFamily(family->getId(), seriesIndexInFamily);
+            seriesColorFamilyId[series->getLabel()] = family->getId();
         }
         else
         {
@@ -259,6 +259,7 @@ bool DataSource::removeSeries(DataSeriesPointer series, bool update)
         if (data_series.value(label) == series)
         {
             data_series.remove(label);
+            seriesColorFamilyId.remove(label);
 
             if (update)
             {
@@ -296,6 +297,7 @@ bool DataSource::removeSeriesByLabel(QString label, bool update)
     if (data_series.contains(label))
     {
         data_series.remove(label);
+        seriesColorFamilyId.remove(label);
 
         if (update)
         {
@@ -314,6 +316,7 @@ bool DataSource::removeSeriesByLabel(QString label, bool update)
 void DataSource::removeAllSeries(bool update)
 {
     data_series.clear();
+    seriesColorFamilyId.clear();
 
     if (update)
     {
@@ -347,9 +350,9 @@ int DataSource::countSeriesInFamily(QString familyId) const
 {
     int count = 0;
 
-    for (auto series : data_series.values())
+    for (QString label : seriesColorFamilyId.keys())
     {
-        if (!series.isNull() && series->getColorFamilyId() == familyId)
+        if (seriesColorFamilyId.value(label) == familyId)
         {
             count++;
         }
@@ -390,7 +393,7 @@ void DataSource::reapplyColorFamilies()
             // Assign new color
             QColor color = cfm->assignColor(series->getLabel(), this, seriesIndex);
             series->setColor(color);
-            series->setColorFamily(familyId, seriesIndex);
+            seriesColorFamilyId[series->getLabel()] = familyId;
         }
         else
         {
@@ -398,7 +401,7 @@ void DataSource::reapplyColorFamilies()
             // The user may have gotten used to this color, so don't change it
 
             // Clear family association
-            series->setColorFamily("", 0);
+            seriesColorFamilyId.remove(series->getLabel());
         }
 
         // Trigger visual update

@@ -95,15 +95,6 @@ public:
     QColor getColor(void) const { return color; }
     void setColor(QColor c);
 
-    // Color family association
-    QString getColorFamilyId() const { return colorFamilyId; }
-    void setColorFamily(QString familyId, int shadeIdx = 0)
-    {
-        colorFamilyId = familyId;
-        shadeIndex = shadeIdx;
-    }
-    int getShadeIndex() const { return shadeIndex; }
-
     float getLineWidth(void) const { return lineWidth; }
     void setLineWidth(float w)
     {
@@ -220,12 +211,6 @@ protected:
 
     //! Color for this curve
     QColor color;
-
-    //! Color family association (empty if not associated)
-    QString colorFamilyId;
-
-    //! Shade index within color family
-    int shadeIndex = 0;
 
     //! Width for this curve
     float lineWidth = 1.0f;
