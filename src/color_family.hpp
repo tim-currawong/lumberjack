@@ -56,6 +56,7 @@ private:
     // Helper methods
     double contrastRatio(QColor c1, QColor c2) const;
     void ensureMinimumContrast(QColor& color, QColor background, double minRatio = 4.5);
+    void separateSimilarShades(QColor backgroundColor);
 };
 
 #endif // COLOR_FAMILY_HPP

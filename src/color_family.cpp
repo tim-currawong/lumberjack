@@ -123,6 +123,43 @@ void ColorFamily::generateShades(QColor backgroundColor)
         shades.append(medium);
         shades.append(mediumDark);
     }
+
+    // Contrast enforcement above can push different starting shades toward the
+    // same lightness floor/ceiling, making them collapse into near-duplicates
+    // for highly saturated base hues. Nudge hue apart to keep shades distinct.
+    separateSimilarShades(backgroundColor);
+}
+
+void ColorFamily::separateSimilarShades(QColor backgroundColor)
+{
+    const int minLightnessSeparation = 12;
+    const int hueSeparationThreshold = 18;
+    const int hueStep = 6;
+    const int maxNudgesPerPair = 8;
+
+    auto hueDistance = [](int h1, int h2) -> int {
+        if (h1 < 0 || h2 < 0)
+            return 0;  // achromatic color; hue is meaningless
+        int diff = qAbs(h1 - h2) % 360;
+        return qMin(diff, 360 - diff);
+    };
+
+    for (int i = 1; i < shades.count(); i++)
+    {
+        for (int attempt = 0; attempt < maxNudgesPerPair; attempt++)
+        {
+            int lightnessDiff = qAbs(shades[i].lightness() - shades[i - 1].lightness());
+            int hueDiff = hueDistance(shades[i].hue(), shades[i - 1].hue());
+
+            if (lightnessDiff >= minLightnessSeparation || hueDiff >= hueSeparationThreshold)
+                break;
+
+            int newHue = (shades[i].hue() + hueStep + 360) % 360;
+            QColor nudged = QColor::fromHsl(newHue, shades[i].saturation(), shades[i].lightness());
+            ensureMinimumContrast(nudged, backgroundColor);
+            shades[i] = nudged;
+        }
+    }
 }
 
 QColor ColorFamily::getShadeForSeries(int seriesIndexInFamily)
