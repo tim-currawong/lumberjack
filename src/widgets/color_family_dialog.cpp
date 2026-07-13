@@ -123,6 +123,7 @@ void ColorFamilyDialog::setupUi()
     colorPreviewLabel = new QLabel();
     colorPreviewLabel->setMinimumHeight(40);
     colorPreviewLabel->setFrameStyle(QFrame::Box | QFrame::Plain);
+    colorPreviewLabel->setScaledContents(true);
     previewLayout->addWidget(colorPreviewLabel, 1);
     editorLayout->addLayout(previewLayout);
 
@@ -565,12 +566,13 @@ void ColorFamilyDialog::refreshColorPreview()
             family->generateShades(cfm->getPlotBackgroundColor());
             QList<QColor> shades = family->getShades();
 
-            // Create preview pixmap
-            int width = colorPreviewLabel->width();
-            int height = colorPreviewLabel->height();
-
-            if (width <= 0) width = 200;
-            if (height <= 0) height = 30;
+            // Create preview pixmap at a fixed resolution, independent of the
+            // label's current on-screen size. The label has scaledContents
+            // enabled and stretches this to fit; drawing at the label's live
+            // width/height here would feed the rendered size back into the
+            // next pixmap, growing on every refresh.
+            const int width = 400;
+            const int height = 60;
 
             QPixmap pixmap(width, height);
             QPainter painter(&pixmap);
