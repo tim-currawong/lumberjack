@@ -251,7 +251,7 @@ double PlotWidget::getMinimumValue(bool *ok) const
  */
 double PlotWidget::getMaximumValue(bool *ok) const
 {
-    double maximum = __DBL_MIN__;
+    double maximum = -__DBL_MAX__;
 
     double value = 0;
 
@@ -1680,6 +1680,8 @@ bool PlotWidget::addSeries(DataSeriesPointer series, int axis_id, bool do_replot
         updateTimestampLimits();
     }
 
+    emit curvesChanged();
+
     return true;
 }
 
@@ -1706,6 +1708,8 @@ bool PlotWidget::removeSeries(DataSeriesPointer series)
             replot();
 
             updateTimestampLimits();
+
+            emit curvesChanged();
 
             return true;
         }
@@ -1750,6 +1754,8 @@ void PlotWidget::removeAllSeries()
     }
 
     replot();
+
+    emit curvesChanged();
 }
 
 

@@ -41,6 +41,8 @@ protected:
     void initSignalsSlots(void);
     void initStatusBar(void);
 
+    void refreshStatsView(void);
+
     void loadWorkspaceSettings(void);
     void saveWorkspaceSettings(void);
 
@@ -87,5 +89,9 @@ private:
     FFTWidget fftView;
 
     DebugWidget debugWidget;
+
+    //! Last known view interval, used to refresh the statistics view
+    //! independently of the plot/timeline signal that last reported it
+    QwtInterval statsViewInterval;
 };
 #endif // MAINWINDOW_H
